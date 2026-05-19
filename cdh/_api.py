@@ -384,7 +384,7 @@ def fetch_nasa_power(
         One variable per parameter code, dims ``(time, lat, lon)``,
         EPSG:4326, clipped to boundary.
     """
-    from cdh.ingestion.nasa_power import NASAPowerS3Downloader
+    from cdh.ingestion.nasa_power import NASAPowerDownloader, NASAPowerS3Downloader
     from cdh.spatial.raster_ops import get_roi_data
     from cdh.transform.cube_builder import build_nasa_power_cube
 
@@ -399,13 +399,28 @@ def fetch_nasa_power(
     Path(power_folder).mkdir(parents=True, exist_ok=True)
 
     logger.info("fetch_nasa_power: %s  %s → %s", iso3, start_date, end_date)
-    nc_path = NASAPowerS3Downloader(parameters=variables).download(
-        extent=bbox,
-        starting_date=start_date,
-        ending_date=end_date,
-        output_folder=power_folder,
-        force=force,
-    )
+    try:
+        nc_path = NASAPowerS3Downloader(parameters=variables).download(
+            extent=bbox,
+            starting_date=start_date,
+            ending_date=end_date,
+            output_folder=power_folder,
+            force=force,
+        )
+    except ValueError as exc:
+        if "Variables not found in S3 Zarr store" in str(exc):
+            logger.warning(
+                "fetch_nasa_power: S3 store missing variables, falling back to REST API. %s", exc
+            )
+            nc_path = NASAPowerDownloader(parameters=variables, community=community).download(
+                extent=bbox,
+                starting_date=start_date,
+                ending_date=end_date,
+                output_folder=power_folder,
+                force=force,
+            )
+        else:
+            raise
 
     ds = build_nasa_power_cube(nc_path, parameters=variables)
     return get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]

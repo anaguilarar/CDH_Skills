@@ -24,6 +24,7 @@ from __future__ import annotations
 import logging
 import os
 import tempfile
+from datetime import date, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -112,6 +113,21 @@ def _download_tile(
 def _yyyymmdd(date_str: str) -> str:
     """Convert 'YYYY-MM-DD' → 'YYYYMMDD' for the POWER API."""
     return date_str.replace("-", "")
+
+
+def _yearly_chunks(start: str, end: str) -> list[tuple[str, str]]:
+    """Split a date range into yearly chunks of at most 366 days (API limit)."""
+    d0 = date.fromisoformat(start)
+    d1 = date.fromisoformat(end)
+    chunks: list[tuple[str, str]] = []
+    cur = d0
+    while cur <= d1:
+        chunk_end = date(cur.year, 12, 31)
+        if chunk_end > d1:
+            chunk_end = d1
+        chunks.append((cur.isoformat(), chunk_end.isoformat()))
+        cur = date(cur.year + 1, 1, 1)
+    return chunks
 
 
 def _normalize_power_dataset(ds: xr.Dataset, parameters: list[str]) -> xr.Dataset:
@@ -211,43 +227,42 @@ class NASAPowerDownloader:
             return out_nc
 
         xmin, ymin, xmax, ymax = extent
-        start = _yyyymmdd(starting_date)
-        end = _yyyymmdd(ending_date)
-
         tiles = _tile_bbox(xmin, ymin, xmax, ymax)
+        chunks = _yearly_chunks(starting_date, ending_date)
         logger.info(
-            "NASA POWER: %d tile(s) for bbox=[%.2f,%.2f,%.2f,%.2f]  params=%s",
-            len(tiles), xmin, ymin, xmax, ymax, self.parameters,
+            "NASA POWER: %d tile(s) × %d year-chunk(s) for bbox=[%.2f,%.2f,%.2f,%.2f]  params=%s",
+            len(tiles), len(chunks), xmin, ymin, xmax, ymax, self.parameters,
         )
 
-        tile_datasets: list[xr.Dataset] = []
-        for i, (tx1, ty1, tx2, ty2) in enumerate(tiles):
-            logger.info(
-                "NASA POWER: downloading tile %d/%d [%.2f,%.2f,%.2f,%.2f]",
-                i + 1, len(tiles), tx1, ty1, tx2, ty2,
-            )
-            ds_tile = _download_tile(
-                tx1, ty1, tx2, ty2, start, end, self.parameters, self.community
-            )
-            if ds_tile is not None:
-                ds_tile = _normalize_power_dataset(ds_tile, self.parameters)
-                tile_datasets.append(ds_tile)
-            else:
-                logger.warning("NASA POWER: tile %d returned no data, skipping.", i + 1)
+        all_datasets: list[xr.Dataset] = []
+        for chunk_start, chunk_end in chunks:
+            start = _yyyymmdd(chunk_start)
+            end = _yyyymmdd(chunk_end)
+            for i, (tx1, ty1, tx2, ty2) in enumerate(tiles):
+                logger.info(
+                    "NASA POWER: tile %d/%d [%.2f,%.2f,%.2f,%.2f]  %s→%s",
+                    i + 1, len(tiles), tx1, ty1, tx2, ty2, chunk_start, chunk_end,
+                )
+                ds_tile = _download_tile(
+                    tx1, ty1, tx2, ty2, start, end, self.parameters, self.community
+                )
+                if ds_tile is not None:
+                    ds_tile = _normalize_power_dataset(ds_tile, self.parameters)
+                    all_datasets.append(ds_tile)
+                else:
+                    logger.warning(
+                        "NASA POWER: tile %d chunk %s→%s returned no data, skipping.",
+                        i + 1, chunk_start, chunk_end,
+                    )
 
-        if not tile_datasets:
+        if not all_datasets:
             raise RuntimeError(
-                "NASA POWER: no data downloaded for any tile. "
+                "NASA POWER: no data downloaded for any tile/chunk. "
                 "Check that the extent, date range, and parameter names are valid."
             )
 
-        if len(tile_datasets) == 1:
-            merged = tile_datasets[0]
-        else:
-            # Merge spatial tiles; overlapping edges are averaged
-            merged = xr.combine_by_coords(tile_datasets, combine_attrs="override")
+        merged = xr.combine_by_coords(all_datasets, combine_attrs="override") if len(all_datasets) > 1 else all_datasets[0]
 
-        # Write with zlib compression
         encoding = {
             v: {"zlib": True, "complevel": 4}
             for v in merged.data_vars
