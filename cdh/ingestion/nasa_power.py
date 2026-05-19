@@ -78,8 +78,8 @@ def _download_tile(
         "latitude-max": ymax,
         "start": start,
         "end": end,
-        "format": "NETCDF4",
-        "user": "anonymous",
+        "format": "netcdf",
+        "user": "cdhuser",
         "header": "true",
         "time-standard": "UTC",
     }
