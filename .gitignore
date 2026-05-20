@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.dist/
+build/
+
+.gemini/
+.claude/skills/geospatial-cube-processor-workspace/
+.claude/skills/notebook-plots-workspace/
+climate-data-download-workspace/
+.claude/commands/

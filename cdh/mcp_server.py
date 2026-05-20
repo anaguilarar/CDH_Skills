@@ -181,6 +181,7 @@ def download_chirps(
             float(ds.lon.min()), float(ds.lat.min()),
             float(ds.lon.max()), float(ds.lat.max()),
         ]
+        out_vars = list(ds.data_vars)
         ds.close()
 
         return _ok({
@@ -188,7 +189,7 @@ def download_chirps(
             "output_folder": output_folder,
             "iso3": iso3,
             "feature_name": feature_name,
-            "variables": ["precipitation"],
+            "variables": out_vars,
             "start_date": start_date,
             "end_date": end_date,
             "n_times": n_times,
@@ -268,6 +269,7 @@ def download_chirts(
             float(ds.lon.min()), float(ds.lat.min()),
             float(ds.lon.max()), float(ds.lat.max()),
         ]
+        out_vars = list(ds.data_vars)
         ds.close()
 
         return _ok({
@@ -275,7 +277,7 @@ def download_chirts(
             "output_folder": output_folder,
             "iso3": iso3,
             "feature_name": feature_name,
-            "variables": variables,
+            "variables": out_vars,
             "start_date": start_date,
             "end_date": end_date,
             "n_times": n_times,
@@ -364,6 +366,7 @@ def download_agera5(
             float(ds.lon.min()), float(ds.lat.min()),
             float(ds.lon.max()), float(ds.lat.max()),
         ]
+        out_vars = list(ds.data_vars)
         ds.close()
 
         return _ok({
@@ -371,7 +374,7 @@ def download_agera5(
             "output_folder": output_folder,
             "iso3": iso3,
             "feature_name": feature_name,
-            "variables": variables,
+            "variables": out_vars,
             "start_date": start_date,
             "end_date": end_date,
             "n_times": n_times,
@@ -452,6 +455,7 @@ def download_nasa_power(
             float(ds.lon.min()), float(ds.lat.min()),
             float(ds.lon.max()), float(ds.lat.max()),
         ]
+        out_vars = list(ds.data_vars)
         ds.close()
 
         return _ok({
@@ -459,7 +463,7 @@ def download_nasa_power(
             "output_folder": output_folder,
             "iso3": iso3,
             "feature_name": feature_name,
-            "variables": variables,
+            "variables": out_vars,
             "start_date": start_date,
             "end_date": end_date,
             "n_times": n_times,

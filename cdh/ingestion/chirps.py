@@ -172,14 +172,15 @@ class CHIRPSDownloader:
         last_exc: Exception | None = None
         for url in urls:
             try:
-                with rasterio.open(url) as src:
-                    aoi_geom = gpd.GeoSeries([from_xyxy_2polygon(*extent)])
-                    masked, transform = rio_mask(dataset=src, shapes=aoi_geom, crop=True)
-                    if masked.shape[0] > 1:
-                        masked = np.expand_dims(masked[-1], axis=0)
-                    xrm = numpy_to_xarray(masked, transform, crs=str(src.crs), var_name="precipitation")
-                    xrm.to_netcdf(out_nc)
-                    logger.debug("CHIRPS saved: %s", out_nc)
+                with rasterio.Env(GDAL_HTTP_TIMEOUT=30, GDAL_HTTP_MAX_RETRY=2, GDAL_HTTP_RETRY_DELAY=3):
+                    with rasterio.open(url) as src:
+                        aoi_geom = gpd.GeoSeries([from_xyxy_2polygon(*extent)])
+                        masked, transform = rio_mask(dataset=src, shapes=aoi_geom, crop=True)
+                        if masked.shape[0] > 1:
+                            masked = np.expand_dims(masked[-1], axis=0)
+                        xrm = numpy_to_xarray(masked, transform, crs=str(src.crs), var_name="precipitation")
+                        xrm.to_netcdf(out_nc)
+                        logger.debug("CHIRPS saved: %s", out_nc)
                 return
             except Exception as exc:  # noqa: BLE001
                 last_exc = exc

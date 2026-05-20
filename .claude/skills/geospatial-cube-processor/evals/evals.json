@@ -1,0 +1,49 @@
+{
+  "skill_name": "geospatial-cube-processor",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a CHIRPS precipitation xarray Dataset loaded as `ds_chirps` (dims: lat, lon, time) and a SoilGrids soil organic carbon Dataset loaded as `ds_soil` (dims: lat, lon, no time). I want to clip both to Ethiopia (ISO3: ETH) at admin level 1 (regions), then stack them into a single cube at the coarsest resolution. Write the masking and stacking functions inline into my script.",
+      "expected_output": "Two functions written inline: mask_to_admin() clipping each dataset to ETH admin level 1 via GADM, and stack_datasets() merging them at coarsest resolution. Both functions include STAC-compliant attributes. Static soil layer handled gracefully alongside time-varying CHIRPS.",
+      "files": [],
+      "assertions": [
+        "mask_to_admin function is present with country_iso3, admin_level, and shapefile_path parameters",
+        "GADM URL uses ETH and admin level 1 in the example call or comment",
+        "stack_datasets function is present with target_resolution='coarsest' as default or argument",
+        "ds.rio.reproject_match is used for spatial alignment",
+        "xr.merge is used to combine datasets",
+        "STAC attributes (bbox, proj:epsg, instruments, platform) are set on output datasets",
+        "Static layer (soil, no time dim) is mentioned or handled gracefully"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I've got a masked xarray Dataset `ds_masked` covering Colombia (COL) with variables 'precipitation' and 'temperature' and a time dimension (daily, 2020–2022). I have a GeoDataFrame `gdf_departments` with Colombia's departments loaded from a local shapefile. Write me a summarize_by_admin function that computes monthly mean precipitation and temperature per department and saves results to 'colombia_monthly_stats.csv'.",
+      "expected_output": "summarize_by_admin function written inline that clips to each department, resamples to monthly frequency using xr.resample(time='ME'), computes mean, and outputs a tidy DataFrame saved to the specified CSV path. Columns: admin_unit, variable, time, value.",
+      "files": [],
+      "assertions": [
+        "summarize_by_admin function is present with boundaries, agg_method, temporal_freq, and output_csv parameters",
+        "xr.resample with time='ME' or temporal_freq='ME' is used for monthly aggregation",
+        "rio.clip is used to iterate over admin units",
+        "output DataFrame has admin_unit, variable, time, value columns (mentioned or demonstrated)",
+        "output_csv='colombia_monthly_stats.csv' is passed in the example call",
+        "has_time check is present to handle static vs time-varying layers"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I'm working with three raster datasets in Python: a DEM (elevation, static, 90m resolution), an AgERA5 solar radiation dataset (daily, 0.1 degree resolution), and a CHIRPS rainfall dataset (daily, 0.05 degree resolution). All are loaded as xarray Datasets with lat/lon dims. I want to stack them into one cube at the finest resolution, then export each variable as a separate Cloud Optimized GeoTIFF. Write the stacking function and the COG export code.",
+      "expected_output": "stack_datasets function written with target_resolution='finest', plus a loop or per-variable code block calling .rio.to_raster(driver='COG') for each variable in the merged dataset. STAC attributes included on the stacked output.",
+      "files": [],
+      "assertions": [
+        "stack_datasets function is present",
+        "target_resolution='finest' is used in the example call",
+        "rio.reproject_match is used for alignment",
+        "rio.to_raster with driver='COG' is present for export",
+        "COG export iterates over data variables or shows per-variable export",
+        "STAC attributes (bbox, proj:epsg, instruments) are set on the stacked dataset",
+        "Static DEM layer (no time dim) is mentioned as handled or included in merge"
+      ]
+    }
+  ]
+}

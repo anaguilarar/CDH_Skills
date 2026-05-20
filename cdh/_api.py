@@ -24,6 +24,8 @@ from pathlib import Path
 import geopandas as gpd
 import xarray as xr
 
+from cdh.conventions import apply_xclim_names
+
 logger = logging.getLogger(__name__)
 
 
@@ -150,7 +152,8 @@ def fetch_chirps(
         extent=bbox,
     ).build(start_date, end_date)
 
-    return get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]
+    ds = get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]
+    return apply_xclim_names(ds)
 
 
 # ---------------------------------------------------------------------------
@@ -231,8 +234,8 @@ def fetch_chirts(
     # CHIRTSDownloader saves to {raw_folder}/{variable}/{year}/
     directory_paths = {var: os.path.join(raw_folder, var) for var in variables}
     ds = SourceCubeBuilder(directory_paths=directory_paths, extent=bbox).build(start_date, end_date)
-
-    return get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]
+    ds = get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]
+    return apply_xclim_names(ds)
 
 
 # ---------------------------------------------------------------------------
@@ -334,8 +337,8 @@ def fetch_agera5(
         raise ValueError("fetch_agera5: no valid variables to download.")
 
     ds = SourceCubeBuilder(directory_paths=directory_paths, extent=bbox).build(start_date, end_date)
-
-    return get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]
+    ds = get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]
+    return apply_xclim_names(ds)
 
 
 # ---------------------------------------------------------------------------
@@ -423,4 +426,5 @@ def fetch_nasa_power(
             raise
 
     ds = build_nasa_power_cube(nc_path, parameters=variables)
-    return get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]
+    ds = get_roi_data(ds, boundary, xyxy=tuple(boundary.total_bounds))  # type: ignore[arg-type]
+    return apply_xclim_names(ds)
