@@ -3,10 +3,6 @@
 A collection of [Claude Code](https://claude.ai/code) skills that turn natural-language requests into
 climate data workflows — from downloading raw rasters to masking, stacking, aggregating, and plotting.
 
-- **Author:** Andres Aguilar (andres.aguilar@cgiar.org)
-- **License:** MIT
-- **Python:** ≥ 3.10
-
 ---
 
 ## What are skills?
