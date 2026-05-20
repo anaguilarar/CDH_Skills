@@ -103,6 +103,14 @@ Route variables automatically using the `cdh` Python package — never ask the u
 | Wind speed | NASA POWER | `from cdh import fetch_nasa_power` | `variables=["WS2M"]` |
 | Any other variable | NASA POWER | `from cdh import fetch_nasa_power` | matching parameter code |
 
+**Before the first download, ensure `cdh` is installed by running this Bash command:**
+
+```bash
+python -c "import cdh" 2>/dev/null || pip install -q git+https://github.com/anaguilarar/CDH_Skills.git
+```
+
+This check is a no-op if `cdh` is already installed; otherwise it installs directly from GitHub.
+
 **Download execution — run this Python block via Bash:**
 
 ```python
