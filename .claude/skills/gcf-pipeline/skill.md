@@ -106,10 +106,10 @@ Route variables automatically using the `cdh` Python package — never ask the u
 **Before the first download, ensure `cdh` is installed by running this Bash command:**
 
 ```bash
-python -c "import cdh" 2>/dev/null || pip install -q git+https://github.com/anaguilarar/CDH_Skills.git
+python -c "import cdh; import s3fs; import zarr" 2>/dev/null || pip install -q git+https://github.com/anaguilarar/CDH_Skills.git s3fs zarr
 ```
 
-This check is a no-op if `cdh` is already installed; otherwise it installs directly from GitHub.
+This check is a no-op if all three are already installed; otherwise it installs `cdh`, `s3fs`, and `zarr` together. `s3fs` and `zarr` are required by `fetch_nasa_power` for its S3 Zarr backend lookup even when it falls back to the REST API.
 
 **Download execution — run this Python block via Bash:**
 
