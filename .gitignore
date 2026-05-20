@@ -12,3 +12,4 @@ build/
 .claude/skills/notebook-plots-workspace/
 climate-data-download-workspace/
 .claude/commands/
+.claude/skills/gcf-pipeline-workspace/
