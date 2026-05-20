@@ -1,0 +1,51 @@
+{
+  "skill_name": "notebook-plots",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a pandas DataFrame called `df` with monthly precipitation data from CHIRPS for three provinces in Ethiopia (Tigray, Amhara, Oromia) covering 2010–2020. The columns are admin_unit, variable, time, value — this came out of summarize_by_admin. I want to plot a time series so I can see how precipitation has changed over the years in each region. Can you write the function directly into my notebook?",
+      "expected_output": "A Python notebook cell containing: (1) a setup cell with plotly imports, (2) a plot_time_series function that takes the DataFrame and produces an interactive multi-line chart with one line per admin unit, hover tooltips, and proper axis labels. The function should handle the time column as datetime and label the y-axis with the variable name.",
+      "files": [],
+      "assertions": [
+        "The output contains a Python function named plot_time_series",
+        "The function uses plotly (px.line or go.Scatter) for interactivity",
+        "The function converts the time column to datetime using pd.to_datetime",
+        "The function groups by admin_unit to produce one line per region",
+        "The output includes a setup cell with at minimum plotly imports",
+        "The function accepts a DataFrame as its first argument",
+        "Axis labels or title include the variable name (e.g. 'precip' or 'value')"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I've got an xarray Dataset `ds_kenya` with variables ['precip', 'tmax'] and dimensions lat, lon, time (monthly 2015–2022). It was produced by mask_to_admin clipped to Kenya. I want to see a spatial map of mean annual precipitation — averaged over all time steps — as a color-coded raster. Write me the function for my Jupyter notebook. I don't have hvplot installed.",
+      "expected_output": "A Python notebook cell containing a plot_spatial_map function that: (1) selects the 'precip' variable from the Dataset, (2) averages over the time dimension, (3) uses a sequential blue colormap appropriate for precipitation, (4) renders an interactive map using plotly (since hvplot is not installed), with Longitude/Latitude axis labels and a colorbar labeled 'precip'.",
+      "files": [],
+      "assertions": [
+        "The output contains a Python function named plot_spatial_map",
+        "The function averages over the time dimension when no time argument is given",
+        "The function uses a blue-toned colormap for precipitation (Blues or similar)",
+        "The function uses plotly (px.imshow or go.Heatmap) since hvplot is unavailable",
+        "The function includes colorbar or color axis labeling with the variable name",
+        "The function handles coordinate name detection (lon/lat or longitude/latitude)",
+        "The output includes a _get_cmap helper or equivalent colormap selection logic"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need an agroclimate seasonal pattern chart for my analysis. My DataFrame df_seasonal has monthly data from 2000–2023 for a single district in Colombia. Columns are admin_unit, variable, time, value. The variables are 'precip' (monthly total in mm) and 'tmax' (mean daily max temperature in Celsius). I want the classic chart: precipitation as bars and temperature as a line on a secondary axis, showing the average seasonal cycle. Can you write this directly in my notebook cell?",
+      "expected_output": "A Python notebook cell containing a plot_seasonal_pattern function that: (1) computes monthly climatology averages for both variables, (2) renders precipitation as bars and temperature as a line on a secondary y-axis, (3) uses blue for precipitation and orange/red for temperature, (4) labels axes with variable names and units (mm for precip, °C for temperature), (5) uses plotly make_subplots with secondary_y=True for the dual-axis layout.",
+      "files": [],
+      "assertions": [
+        "The output contains a Python function named plot_seasonal_pattern",
+        "The function creates a dual-axis chart (secondary_y=True or equivalent)",
+        "Precipitation is rendered as bars (go.Bar or px.bar)",
+        "Temperature is rendered as a line (go.Scatter or similar)",
+        "The function computes monthly climatology (groups by month and averages across years)",
+        "Month labels are used on the x-axis (Jan–Dec or similar)",
+        "Both y-axes have labels including the variable name or units",
+        "The function auto-detects which variable is precipitation vs temperature from the name"
+      ]
+    }
+  ]
+}

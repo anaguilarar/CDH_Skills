@@ -8,7 +8,6 @@ __pycache__/
 .dist/
 build/
 
-.gemini/
 .claude/skills/geospatial-cube-processor-workspace/
 .claude/skills/notebook-plots-workspace/
 climate-data-download-workspace/
