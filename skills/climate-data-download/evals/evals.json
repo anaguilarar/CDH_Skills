@@ -1,0 +1,57 @@
+{
+  "skill_name": "climate-data-download",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need daily precipitation data for Ghana from 2015 to 2020. Save files to D:/tmp/ghana_climate",
+      "expected_output": "Routes precipitation to CHIRPS, shows a routing plan table, and asks for user confirmation before calling any tools.",
+      "files": [],
+      "expectations": [
+        "Response identifies CHIRPS as the source for precipitation",
+        "Response shows a routing plan or table before calling any tools",
+        "Response asks for user confirmation before proceeding to download",
+        "Response includes the tool name 'download_chirps' in the plan"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Download temperature (max and min) and solar radiation for Ethiopia, January 2018 to December 2022. Output folder: D:/data/ethiopia_climate",
+      "expected_output": "Routes temperature to CHIRTS-ERA5, solar radiation to NASA POWER (ALLSKY_SFC_SW_DWN), shows a multi-source routing plan, and asks for confirmation.",
+      "files": [],
+      "expectations": [
+        "Response routes temperature (Tmax/Tmin) to CHIRTS-ERA5",
+        "Response routes solar radiation to NASA POWER",
+        "Response mentions the NASA POWER variable code ALLSKY_SFC_SW_DWN",
+        "Response shows a routing plan with both sources before calling any tools",
+        "Response asks for user confirmation before proceeding"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need precipitation and wind speed data for Kenya",
+      "expected_output": "Asks for missing required parameters (date range and output folder), does not attempt downloads without them. When routing is mentioned, precipitation maps to CHIRPS and wind speed to AgERA5 with a CDS API key warning.",
+      "files": [],
+      "expectations": [
+        "Response asks for at least one missing required parameter (date range or output folder)",
+        "Response does NOT call or describe calling download tools without the required parameters",
+        "Response mentions CHIRPS as the source for precipitation",
+        "Response mentions AgERA5 as the source for wind speed",
+        "Response warns about the CDS API key requirement for AgERA5"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I need rainfall and relative humidity for the Ashanti region of Ghana, from 2019-01-01 to 2021-12-31. Save to D:/tmp/ghana_ashanti",
+      "expected_output": "Routes rainfall to CHIRPS and relative humidity to NASA POWER (RH2M), mentions using list_admin_units to confirm 'Ashanti' spelling, shows the plan, and asks for confirmation.",
+      "files": [],
+      "expectations": [
+        "Response routes rainfall/precipitation to CHIRPS",
+        "Response routes relative humidity to NASA POWER",
+        "Response mentions the NASA POWER variable code RH2M",
+        "Response mentions calling list_admin_units to confirm the admin unit name before downloading",
+        "Response shows a routing plan before calling download tools",
+        "Response asks for user confirmation before proceeding"
+      ]
+    }
+  ]
+}

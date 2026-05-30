@@ -7,9 +7,13 @@ __pycache__/
 *.egg-info/
 .dist/
 build/
-
+.agents/
 .claude/skills/geospatial-cube-processor-workspace/
 .claude/skills/notebook-plots-workspace/
 climate-data-download-workspace/
 .claude/commands/
 .claude/skills/gcf-pipeline-workspace/
+
+climate_agent_colab_gemini.ipynb
+
+.claude/

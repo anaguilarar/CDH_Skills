@@ -1,0 +1,63 @@
+{
+  "skill_name": "gcf-pipeline",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to see and get the accumulated solar radiation for 2012 in Malawi. Save the output to D:/tmp/gcf_eval_solar",
+      "expected_output": "The skill parses parameters (accumulated→sum, solar radiation→NASA POWER, 2012, admin level 0), shows a 3-step plan where download and process steps say they 'run now in this session', gets one confirmation, then: runs Python via Bash to download data and save a .nc file, runs Python via Bash to mask+aggregate into a monthly-sum CSV, creates a notebook at the output folder with ONLY 3 cells (markdown header, load CSV, bar chart plot). No helper functions (mask_to_admin, summarize_by_admin) are written into the notebook.",
+      "files": [],
+      "assertions": [
+        "The plan shows download and process as running 'now in this session' (not written into notebook)",
+        "Solar radiation is routed to NASA POWER with variable ALLSKY_SFC_SW_DWN",
+        "The aggregation method is 'sum' because user said 'accumulated'",
+        "Only ONE confirmation is requested before any action is taken",
+        "A Bash/Python call is made to download the data (fetch_nasa_power used in Bash)",
+        "A Bash/Python call is made to process the data (mask + resample aggregation)",
+        "A CSV file is saved to the output folder (summary or monthly CSV mentioned)",
+        "A notebook (.ipynb) is created at the output folder",
+        "The notebook does NOT contain mask_to_admin or summarize_by_admin function definitions",
+        "The notebook contains a cell that loads data from the CSV (pd.read_csv)",
+        "A plot cell is written using plotly (go.Figure or px.) for visualization",
+        "A pipeline-complete summary table is shown at the end"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need to download precipitation and max temperature for Ghana from 2018 to 2020, clip to districts (admin level 2), compute monthly averages per district, and plot a time series. Output folder: D:/tmp/gcf_eval_ghana",
+      "expected_output": "The skill routes precipitation to CHIRPS (fetch_chirps) and Tmax to CHIRTS (fetch_chirts), shows a plan with both sources running in-session, asks one confirmation, runs Bash Python to download both datasets, runs Bash Python to mask+summarize with admin_level=2 and temporal_freq='ME', saves a CSV with per-district monthly averages, creates a notebook with only: markdown header + load CSV + plot_time_series call.",
+      "files": [],
+      "assertions": [
+        "Precipitation is routed to CHIRPS (fetch_chirps used in Bash)",
+        "Temperature/Tmax is routed to CHIRTS-ERA5 (fetch_chirts used in Bash)",
+        "Admin level 2 is used (districts)",
+        "The aggregation method is 'mean' (monthly averages)",
+        "The temporal frequency is monthly (ME)",
+        "Only one confirmation prompt is shown before any downloads",
+        "A Bash/Python call downloads at least one of the datasets",
+        "A CSV file with per-district results is saved to the output folder",
+        "A notebook is created at the output folder",
+        "The notebook does NOT contain mask_to_admin or summarize_by_admin definitions",
+        "The notebook contains a plot_time_series call or equivalent time series visualization"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Can you get me solar radiation, relative humidity, and wind speed for Ethiopia in 2021? I want to compare these across regions (admin level 1). Save to D:/tmp/gcf_eval_eth",
+      "expected_output": "The skill routes solar radiation (ALLSKY_SFC_SW_DWN) and relative humidity (RH2M) together to NASA POWER in one Bash call, and wind speed to NASA POWER as well (WS2M). Plan shows all variables running in-session. After confirmation: runs Bash Python to download, runs Bash Python to mask+aggregate at admin level 1, saves per-region CSV, creates notebook with only header + load CSV + admin_comparison plot (matching 'compare across regions' intent).",
+      "files": [],
+      "assertions": [
+        "Solar radiation and relative humidity are routed to NASA POWER",
+        "Wind speed is routed to NASA POWER (WS2M) or AgERA5",
+        "Admin level 1 is used (regions/provinces)",
+        "Only one confirmation is requested before any downloads",
+        "A Bash/Python call is made to download data",
+        "A Bash/Python call processes and aggregates data at admin level 1",
+        "A CSV with per-region values is saved to the output folder",
+        "A notebook is created at the output folder",
+        "The notebook does NOT contain mask_to_admin or summarize_by_admin definitions",
+        "The notebook contains a comparison or bar chart visualization (plot_admin_comparison or equivalent)",
+        "Ethiopia is correctly identified (ISO3: ETH)"
+      ]
+    }
+  ]
+}

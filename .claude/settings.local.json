@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:data.chc.ucsb.edu)"
+      "WebFetch(domain:data.chc.ucsb.edu)",
+      "Read(//d/OneDrive - CGIAR/scripts/aggeodata/**)",
+      "Bash(python -c \"from aggeodata.ingestion.cf_names import CF_VARIABLE_MAP, AGERA5_CF_MAP, to_cf_name, rename_cf_vars; from aggeodata.ingestion.chirps import CHIRPSDownloader; from aggeodata.ingestion.chirts import CHIRTSDownloader; from aggeodata.ingestion.nasa_power import NASAPowerDownloader, NASAPowerS3Downloader; from aggeodata.ingestion.agera5 import AgEra5Downloader, read_annual_data; print\\('All imports OK'\\); print\\('CF_VARIABLE_MAP sample:', {k: CF_VARIABLE_MAP[k] for k in list\\(CF_VARIABLE_MAP\\)[:5]}\\)\")"
     ]
   }
 }
