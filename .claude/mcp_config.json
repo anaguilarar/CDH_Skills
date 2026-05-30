@@ -5,18 +5,5 @@
       "args": ["-m", "aggeodata.mcp_server"],
       "description": "aggeodata tools: download CHIRPS precipitation, CHIRTS-ERA5 temperature, AgERA5 agrometeorological indicators (including hourly RH at 06/09/12/15/18 UTC), and NASA POWER data for any country, region, or bounding box. Requires: pip install -e '.[download,mcp]' from the aggeodata project root. AgERA5 also needs ~/.cdsapirc."
     },
-    "ag-cube-cm": {
-      "command": "python",
-      "args": ["-m", "ag_cube_cm.mcp_server"],
-      "env": {
-        "PYTHONPATH": "${workspaceFolder}/src"
-      },
-      "description": "ag-cube-cm tools: download AgERA5/CHIRPS weather, SoilGrids soil data, and run DSSAT/BANANA_N crop model simulations. Requires: pip install -e '.[mcp]' from the project root."
-    },
-    "cdh": {
-      "command": "python",
-      "args": ["-m", "cdh.mcp_server"],
-      "description": "cdh tools: download CHIRPS precipitation, CHIRTS-ERA5 temperature, AgERA5 agrometeorological indicators, and NASA POWER data for any country or admin unit. Requires: pip install -e '.[full]' from the project root. AgERA5 also needs ~/.cdsapirc."
-    }
   }
 }
